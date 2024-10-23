@@ -10,7 +10,7 @@ use crate::util::{
 use crate::{
     constants::transfer_memo,
     errors::ErrorCode,
-    state::Whirlpool,
+    state::{is_invoked_by_segmenter, Whirlpool},
     util::{to_timestamp_u64, SparseSwapTickSequenceBuilder},
 };
 
@@ -91,6 +91,12 @@ pub struct TwoHopSwapV2<'info> {
     pub oracle_two: UncheckedAccount<'info>,
 
     pub memo_program: Program<'info, Memo>,
+
+    /// CHECK: checked in the handler
+    pub registered_segmenter: UncheckedAccount<'info>,
+
+    /// CHECK: checked in the handler
+    pub registry: UncheckedAccount<'info>,
     // remaining accounts
     // - accounts for transfer hook program of token_mint_input
     // - accounts for transfer hook program of token_mint_intermediate
@@ -111,6 +117,10 @@ pub fn handler<'info>(
     sqrt_price_limit_two: u128,
     remaining_accounts_info: Option<RemainingAccountsInfo>,
 ) -> Result<()> {
+    if !is_invoked_by_segmenter(&ctx.accounts.registry, &ctx.accounts.registered_segmenter) {
+        return Err(ErrorCode::UnauthorizedInvocation.into());
+    }
+
     let clock = Clock::get()?;
     // Update the global reward growth which increases as a function of time.
     let timestamp = to_timestamp_u64(clock.unix_timestamp)?;

@@ -10,7 +10,7 @@ use crate::{
     constants::transfer_memo,
     errors::ErrorCode,
     manager::swap_manager::*,
-    state::Whirlpool,
+    state::{is_invoked_by_segmenter, Whirlpool},
     util::{
         to_timestamp_u64, v2::update_and_swap_whirlpool_v2, SparseSwapTickSequenceBuilder,
         SwapTickSequence,
@@ -61,6 +61,12 @@ pub struct SwapV2<'info> {
     #[account(mut, seeds = [b"oracle", whirlpool.key().as_ref()], bump)]
     /// CHECK: Oracle is currently unused and will be enabled on subsequent updates
     pub oracle: UncheckedAccount<'info>,
+
+    /// CHECK: checked in the handler
+    pub registered_segmenter: UncheckedAccount<'info>,
+
+    /// CHECK: checked in the handler
+    pub registry: UncheckedAccount<'info>,
     // remaining accounts
     // - accounts for transfer hook program of token_mint_a
     // - accounts for transfer hook program of token_mint_b
@@ -76,6 +82,10 @@ pub fn handler<'info>(
     a_to_b: bool, // Zero for one
     remaining_accounts_info: Option<RemainingAccountsInfo>,
 ) -> Result<()> {
+    if !is_invoked_by_segmenter(&ctx.accounts.registry, &ctx.accounts.registered_segmenter) {
+        return Err(ErrorCode::UnauthorizedInvocation.into());
+    }
+
     let whirlpool = &mut ctx.accounts.whirlpool;
     let clock = Clock::get()?;
     // Update the global reward growth which increases as a function of time.
