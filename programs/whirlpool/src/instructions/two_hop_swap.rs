@@ -4,7 +4,7 @@ use anchor_spl::token::{self, Token, TokenAccount};
 use crate::{
     errors::ErrorCode,
     manager::swap_manager::*,
-    state::Whirlpool,
+    state::{is_invoked_by_segmenter, Whirlpool},
     util::{to_timestamp_u64, update_and_swap_whirlpool, SparseSwapTickSequenceBuilder},
 };
 
@@ -72,6 +72,12 @@ pub struct TwoHopSwap<'info> {
     #[account(seeds = [b"oracle", whirlpool_two.key().as_ref()],bump)]
     /// CHECK: Oracle is currently unused and will be enabled on subsequent updates
     pub oracle_two: UncheckedAccount<'info>,
+
+    /// CHECK: checked in the handler
+    pub registered_segmenter: UncheckedAccount<'info>,
+
+    /// CHECK: checked in the handler
+    pub registry: UncheckedAccount<'info>,
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -85,6 +91,10 @@ pub fn handler(
     sqrt_price_limit_one: u128,
     sqrt_price_limit_two: u128,
 ) -> Result<()> {
+    if !is_invoked_by_segmenter(&ctx.accounts.registry, &ctx.accounts.registered_segmenter) {
+        return Err(ErrorCode::UnauthorizedInvocation.into());
+    }
+
     let clock = Clock::get()?;
     // Update the global reward growth which increases as a function of time.
     let timestamp = to_timestamp_u64(clock.unix_timestamp)?;
