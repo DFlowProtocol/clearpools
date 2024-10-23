@@ -146,6 +146,9 @@ pub enum ErrorCode {
 
     #[msg("Trade resulted in partial fill")]
     PartialFillError, // 0x17a9 (6057)
+
+    #[msg("Swap was not signed by an authorized segmenter")]
+    UnauthorizedInvocation, // 0x17aa (6058)
 }
 
 impl From<TryFromIntError> for ErrorCode {
