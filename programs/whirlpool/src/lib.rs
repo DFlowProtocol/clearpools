@@ -12,8 +12,6 @@ pub mod instructions;
 pub mod manager;
 #[doc(hidden)]
 pub mod math;
-#[doc(hidden)]
-pub mod security;
 pub mod state;
 #[doc(hidden)]
 pub mod tests;
