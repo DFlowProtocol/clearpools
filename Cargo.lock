@@ -2002,6 +2002,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
+name = "solana-conditional-liquidity"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2e064b9a0aee3a6614ea5b5296ed6b57823999d22eedfd2015976b4b22bb7051"
+dependencies = [
+ "bytemuck",
+ "solana-program",
+]
+
+[[package]]
 name = "solana-frozen-abi"
 version = "1.17.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2829,6 +2839,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_with",
+ "solana-conditional-liquidity",
  "solana-program",
  "solana-security-txt",
  "spl-token",

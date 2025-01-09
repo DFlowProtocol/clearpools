@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::memo::Memo;
 use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
+use solana_conditional_liquidity::is_invoked_by_segmenter;
 
 use crate::swap_with_transfer_fee_extension;
 use crate::util::{
@@ -10,7 +11,7 @@ use crate::util::{
 use crate::{
     constants::transfer_memo,
     errors::ErrorCode,
-    state::{is_invoked_by_segmenter, Whirlpool},
+    state::Whirlpool,
     util::{to_timestamp_u64, SparseSwapTickSequenceBuilder},
 };
 

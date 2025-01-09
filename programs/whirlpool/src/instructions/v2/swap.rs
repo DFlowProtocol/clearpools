@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::memo::Memo;
 use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
+use solana_conditional_liquidity::is_invoked_by_segmenter;
 
 use crate::util::{
     calculate_transfer_fee_excluded_amount, calculate_transfer_fee_included_amount,
@@ -10,7 +11,7 @@ use crate::{
     constants::transfer_memo,
     errors::ErrorCode,
     manager::swap_manager::*,
-    state::{is_invoked_by_segmenter, Whirlpool},
+    state::Whirlpool,
     util::{
         to_timestamp_u64, v2::update_and_swap_whirlpool_v2, SparseSwapTickSequenceBuilder,
         SwapTickSequence,

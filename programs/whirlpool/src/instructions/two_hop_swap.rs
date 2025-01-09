@@ -1,10 +1,11 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount};
+use solana_conditional_liquidity::is_invoked_by_segmenter;
 
 use crate::{
     errors::ErrorCode,
     manager::swap_manager::*,
-    state::{is_invoked_by_segmenter, Whirlpool},
+    state::Whirlpool,
     util::{to_timestamp_u64, update_and_swap_whirlpool, SparseSwapTickSequenceBuilder},
 };
 
