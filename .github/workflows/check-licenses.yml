@@ -72,5 +72,5 @@ jobs:
           license-overrides: ${{ vars.LICENSE_AUDIT_LICENSE_OVERRIDES }}
           rust-crate-directories: |
             ${{ github.workspace }}
-            ${{ github.workspace }}/rust-sdk/whirlpool
             ${{ github.workspace }}/rust-sdk/client
+            ${{ github.workspace }}/rust-sdk/whirlpool
